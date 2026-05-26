@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spyware e Adware — Espionagem Silenciosa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050505;
+      --bg-secondary: #0b0b0b;
+      --bg-tertiary: #111111;
+      --bg-card: #151515;
+      --bg-card-hover: #1a1a1a;
+      --fg-primary: #f2f2f2;
+      --fg-secondary: #9a9a9a;
+      --fg-muted: #666666;
+      --accent-red: #ff2b2b;
+      --accent-red-bright: #ff4d4d;
+      --accent-red-dark: #cc0000;
+      --danger-glow: rgba(255, 0, 0, 0.35);
+      --danger-glow-soft: rgba(255, 43, 43, 0.15);
+      --border-danger: rgba(255, 0, 0, 0.15);
+      --border-danger-bright: rgba(255, 0, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg-primary);
+      color: var(--fg-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .font-mono {
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .font-display {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Scanlines Overlay */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      animation: scanlines-move 8s linear infinite;
+    }
+
+    @keyframes scanlines-move {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+
+    /* Binary Rain Canvas */
+    #binary-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Noise Texture Overlay */
+    .noise-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Red Grid Overlay */
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Glitch Text Animation */
+    .glitch {
+      position: relative;
+      animation: glitch-skew 4s infinite linear alternate-reverse;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      color: var(--accent-red);
+      animation: glitch-effect 3s infinite linear alternate-reverse;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      transform: translate(-2px, -2px);
+    }
+
+    .glitch::after {
+      color: #00ffff;
+      animation: glitch-effect 2s infinite linear alternate-reverse;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      transform: translate(2px, 2px);
+    }
+
+    @keyframes glitch-effect {
+      0% { transform: translate(0); }
+      20% { transform: translate(-3px, 3px); }
+      40% { transform: translate(-3px, -3px); }
+      60% { transform: translate(3px, 3px); }
+      80% { transform: translate(3px, -3px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitch-skew {
+      0% { transform: skew(0deg); }
+      10% { transform: skew(-0.5deg); }
+      20% { transform: skew(0.5deg); }
+      30% { transform: skew(0deg); }
+      100% { transform: skew(0deg); }
+    }
+
+    /* Pulse Glow */
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        box-shadow: 0 0 20px var(--danger-glow-soft), 0 0 40px var(--danger-glow-soft);
+      }
+      50% { 
+        box-shadow: 0 0 30px var(--danger-glow), 0 0 60px var(--danger-glow);
+      }
+    }
+
+    /* Flicker Animation */
+    .flicker {
+      animation: flicker 0.15s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Navigation */
+    nav {
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-danger);
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--fg-secondary);
+      transition: all 0.3s ease;
+      font-family: 'Share Tech Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.75rem;
+    }
+
+    .nav-link::before {
+      content: '>';
+      margin-right: 4px;
+      opacity: 0;
+      color: var(--accent-red);
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      opacity: 1;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent-red);
+      box-shadow: 0 0 10px var(--accent-red);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-red);
+      text-shadow: 0 0 10px var(--danger-glow);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-bg-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--danger-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      animation: float-glow 8s ease-in-out infinite;
+    }
+
+    @keyframes float-glow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+    }
+
+    /* Terminal Style Badges */
+    .terminal-badge {
+      font-family: 'Share Tech Mono', monospace;
+      background: rgba(255, 43, 43, 0.1);
+      border: 1px solid var(--border-danger-bright);
+      color: var(--accent-red);
+      padding: 6px 16px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 43, 43, 0.2), transparent);
+      animation: scan-line 3s linear infinite;
+    }
+
+    @keyframes scan-line {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-danger);
+      border-radius: 4px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-red);
+      transform: translateY(-4px);
+      box-shadow: 0 0 30px var(--danger-glow-soft), 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    /* Threat Cards */
+    .threat-card-spyware {
+      border-left: 3px solid var(--accent-red);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 43, 43, 0.05) 100%);
+    }
+
+    .threat-card-adware {
+      border-left: 3px solid #ff8800;
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 136, 0, 0.05) 100%);
+    }
+
+    /* Step Cards */
+    .step-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-danger);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--accent-red), transparent, var(--accent-red));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .step-card:hover::before {
+      opacity: 1;
+    }
+
+    .step-number {
+      position: absolute;
+      top: -14px;
+      left: 16px;
+      background: var(--accent-red);
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      padding: 4px 14px;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+    }
+
+    /* Timeline */
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent-red), var(--accent-red-dark), transparent);
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px var(--danger-glow);
+    }
+
+    @media (max-width: 768px) {
+      .timeline-line {
+        left: 16px;
+      }
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      background: var(--accent-red);
+      border-radius: 2px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      box-shadow: 0 0 20px var(--danger-glow);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 10px var(--danger-glow); }
+      50% { box-shadow: 0 0 30px var(--danger-glow), 0 0 50px var(--danger-glow-soft); }
+    }
+
+    @media (max-width: 768px) {
+      .timeline-dot {
+        left: 16px;
+      }
+    }
+
+    /* Protection Tips */
+    .tip-card {
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 200, 100, 0.03) 100%);
+      border: 1px solid rgba(0, 200, 100, 0.2);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tip-card:hover {
+      border-color: #00cc66;
+      box-shadow: 0 0 20px rgba(0, 200, 100, 0.15);
+    }
+
+    /* Alert Box */
+    .alert-box {
+      background: linear-gradient(135deg, rgba(255, 0, 0, 0.08) 0%, rgba(255, 0, 0, 0.02) 100%);
+      border: 1px solid var(--border-danger-bright);
+      border-radius: 4px;
+      position: relative;
+      animation: alert-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes alert-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.2); }
+    }
+
+    .alert-box::before {
+      content: '!';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      width: 24px;
+      height: 24px;
+      background: var(--accent-red);
+      color: #000;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Section Separator */
+    .section-separator {
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--border-danger) 20%, 
+        var(--accent-red) 50%, 
+        var(--border-danger) 80%, 
+        transparent 100%);
+      box-shadow: 0 0 10px var(--danger-glow-soft);
+    }
+
+    /* Scroll Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--accent-red);
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      padding: 14px 36px;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--danger-glow), 0 10px 30px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    /* Icon containers */
+    .icon-container {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .icon-red {
+      background: rgba(255, 43, 43, 0.1);
+      border: 1px solid var(--border-danger-bright);
+      color: var(--accent-red);
+    }
+
+    .icon-amber {
+      background: rgba(255, 136, 0, 0.1);
+      border: 1px solid rgba(255, 136, 0, 0.3);
+      color: #ff8800;
+    }
+
+    .icon-green {
+      background: rgba(0, 200, 100, 0.1);
+      border: 1px solid rgba(0, 200, 100, 0.3);
+      color: #00cc66;
+    }
+
+    /* Fake Popup - Windows Virus Style */
+    .fake-popup {
+      background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 2px solid var(--accent-red);
+      border-radius: 6px;
+      box-shadow: 0 0 50px var(--danger-glow), 0 25px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .fake-popup::before {
+      content: 'CRITICAL ALERT';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-red);
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 20px;
+      letter-spacing: 2px;
+    }
+
+    .fake-popup-header {
+      background: linear-gradient(90deg, var(--accent-red-dark) 0%, var(--accent-red) 50%, var(--accent-red-dark) 100%);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .warning-icon-blink {
+      animation: blink-warning 1s ease-in-out infinite;
+    }
+
+    @keyframes blink-warning {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Fact Cards */
+    .fact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-danger);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fact-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent-red);
+      box-shadow: 0 0 10px var(--danger-glow);
+    }
+
+    /* Source Links */
+    .source-link {
+      transition: all 0.3s ease;
+    }
+
+    .source-link:hover {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 20px var(--danger-glow-soft);
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      background: rgba(5, 5, 5, 0.98);
+      border-left: 1px solid var(--border-danger);
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* Focus states */
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent-red);
+      outline-offset: 4px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+      .scanlines {
+        display: none;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-red-dark);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-red);
+    }
+
+    /* Typing cursor effect */
+    .typing-cursor::after {
+      content: '_';
+      animation: blink-cursor 1s step-end infinite;
+    }
+
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Infection indicator */
+    .infection-indicator {
+      position: relative;
+    }
+
+    .infection-indicator::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent-red);
+      animation: infection-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes infection-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--danger-glow); }
+      50% { opacity: 0.5; box-shadow: 0 0 20px var(--danger-glow); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Scanlines Overlay -->
+  <div class="scanlines"></div>
+  
+  <!-- Binary Rain Canvas -->
+  <canvas id="binary-canvas"></canvas>
+  
+  <!-- Noise Overlay -->
+  <div class="noise-overlay"></div>
+  
+  <!-- Grid Overlay -->
+  <div class="grid-overlay"></div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo -->
+          <a href="#hero" class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-red-600 flex items-center justify-center relative" style="clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));">
+              <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <span class="font-mono text-sm hidden sm:block tracking-wider">MALWARE_ANALYSIS</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex items-center gap-8">
+            <a href="#o-que-e" class="nav-link">Definicoes</a>
+            <a href="#como-funciona" class="nav-link">Mecanismo</a>
+            <a href="#casos-reais" class="nav-link">Casos</a>
+            <a href="#protecao" class="nav-link">Defesa</a>
+            <a href="#fontes" class="nav-link">Fontes</a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-red-900/30 transition-colors" aria-label="Abrir menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="mobile-menu fixed top-16 right-0 bottom-0 w-72 z-50">
+        <div class="p-6 flex flex-col gap-2">
+          <a href="#o-que-e" class="mobile-nav-link py-3 px-4 hover:bg-red-900/20 transition-colors font-mono text-sm border-l-2 border-transparent hover:border-red-600">> Definicoes</a>
+          <a href="#como-funciona" class="mobile-nav-link py-3 px-4 hover:bg-red-900/20 transition-colors font-mono text-sm border-l-2 border-transparent hover:border-red-600">> Mecanismo</a>
+          <a href="#casos-reais" class="mobile-nav-link py-3 px-4 hover:bg-red-900/20 transition-colors font-mono text-sm border-l-2 border-transparent hover:border-red-600">> Casos</a>
+          <a href="#protecao" class="mobile-nav-link py-3 px-4 hover:bg-red-900/20 transition-colors font-mono text-sm border-l-2 border-transparent hover:border-red-600">> Defesa</a>
+          <a href="#fontes" class="mobile-nav-link py-3 px-4 hover:bg-red-900/20 transition-colors font-mono text-sm border-l-2 border-transparent hover:border-red-600">> Fontes</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section relative pt-16">
+      <!-- Background Glows -->
+      <div class="hero-bg-glow" style="top: 30%; left: 30%;"></div>
+      <div class="hero-bg-glow" style="top: 60%; left: 70%; animation-delay: -4s;"></div>
+      
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <!-- Badge -->
+        <div class="reveal terminal-badge inline-block mb-8">
+          <span class="relative z-10 flex items-center gap-2">
+            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            THREAT_DETECTED
+          </span>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="reveal reveal-delay-1 font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 tracking-wide">
+          <span class="text-white glitch" data-text="SPYWARE">SPYWARE</span>
+          <span class="text-gray-600"> & </span>
+          <span class="text-red-500 glitch" data-text="ADWARE">ADWARE</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="reveal reveal-delay-2 font-display text-xl sm:text-2xl text-red-500 mb-4 tracking-widest uppercase">
+          Espionagem Silenciosa
+        </p>
+
+        <p class="reveal reveal-delay-2 text-gray-400 max-w-3xl mx-auto mb-10 text-lg">
+          Analise de ameacas digitais que comprometem a seguranca de milhoes de usuarios. 
+          Identificacao, prevencao e resposta a incidentes.
+        </p>
+
+        <!-- Student Names Area -->
+        <div class="reveal reveal-delay-3 bg-black/60 border border-red-900/50 p-6 max-w-xl mx-auto mb-10 relative">
+          <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-600 to-transparent"></div>
+          <p class="font-mono text-xs text-red-600 mb-3 tracking-widest">// APRESENTADO POR</p>
+          <div class="font-mono text-gray-300 text-sm typing-cursor" id="student-names">
+            <span class="text-gray-600">// João Souza & Eduardo Bapihomet do EXU CAVEIRA 🐐</span>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-600 to-transparent"></div>
+        </div>
+
+        <!-- CTA Button -->
+        <a href="#o-que-e" class="reveal reveal-delay-4 btn-primary inline-flex items-center gap-3">
+          <span>Iniciar Analise</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div class="w-5 h-10 border border-red-900 rounded-full flex justify-center bg-black/30">
+          <div class="w-1 h-3 bg-red-600 rounded-full mt-2 animate-bounce" style="box-shadow: 0 0 10px #ff2b2b;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Separator -->
+    <div class="section-separator max-w-4xl mx-auto"></div>
+
+    <!-- What Is It Section -->
+    <section id="o-que-e" class="py-20 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span class="reveal terminal-badge inline-block mb-4">THREAT_DEFINITION</span>
+          <h2 class="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-wide">
+            <span class="text-red-500">[</span> O QUE SAO <span class="text-red-500">]</span>
+          </h2>
+          <p class="reveal reveal-delay-2 text-gray-500 max-w-2xl mx-auto font-mono text-sm">
+            // Classificacao e analise das ameacas identificadas
+          </p>
+        </div>
+
+        <!-- Threat Cards -->
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Spyware Card -->
+          <div class="reveal card threat-card-spyware p-8 relative">
+            <div class="absolute top-4 right-4 font-mono text-xs text-red-600 opacity-50">THREAT_ID: 001</div>
+            
+            <div class="flex items-start gap-4 mb-6">
+              <div class="icon-container icon-red pulse-glow">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display text-2xl font-bold text-red-500 mb-1 tracking-wide">SPYWARE</h3>
+                <p class="font-mono text-xs text-gray-600">SOFTWARE_ESPIAO</p>
+              </div>
+            </div>
+
+            <div class="space-y-4 text-gray-400 font-light">
+              <p>
+                <span class="text-red-500 font-mono text-sm">// DEFINICAO:</span><br>
+                Programa malicioso que se instala silenciosamente no dispositivo. Seu proposito e monitorar e coletar todas as atividades do usuario sem seu conhecimento.
+              </p>
+              <p>
+                <span class="text-red-500 font-mono text-sm">// OBJETIVO:</span><br>
+                Capturar senhas, dados bancarios, conversas, historico de navegacao e arquivos pessoais. Tudo e transmitido para servidores remotos controlados por atacantes.
+              </p>
+              <p>
+                <span class="text-red-500 font-mono text-sm">// NIVEL_DE_AMEACA:</span><br>
+                <span class="text-red-500 font-bold">CRITICO</span> - Permite roubo de identidade, perdas financeiras e invasao total da privacidade.
+              </p>
+            </div>
+
+            <!-- Warning -->
+            <div class="mt-6 p-4 bg-red-950/30 border border-red-900/50">
+              <div class="flex items-center gap-2 text-red-500 text-sm font-mono">
+                <svg class="w-5 h-5 warning-icon-blink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span class="tracking-wider">ALERTA_CRITICO</span>
+              </div>
+              <p class="text-gray-500 text-sm mt-2 font-mono">Variantes avancadas podem ativar camera e microfone remotamente.</p>
+            </div>
+          </div>
+
+          <!-- Adware Card -->
+          <div class="reveal reveal-delay-1 card threat-card-adware p-8 relative">
+            <div class="absolute top-4 right-4 font-mono text-xs text-orange-600 opacity-50">THREAT_ID: 002</div>
+            
+            <div class="flex items-start gap-4 mb-6">
+              <div class="icon-container icon-amber">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display text-2xl font-bold text-orange-500 mb-1 tracking-wide">ADWARE</h3>
+                <p class="font-mono text-xs text-gray-600">SOFTWARE_PUBLICITARIO</p>
+              </div>
+            </div>
+
+            <div class="space-y-4 text-gray-400 font-light">
+              <p>
+                <span class="text-orange-500 font-mono text-sm">// DEFINICAO:</span><br>
+                Programa que exibe anuncios invasivos no dispositivo. Frequentemente integrado em softwares "gratuitos" disponiveis para download.
+              </p>
+              <p>
+                <span class="text-orange-500 font-mono text-sm">// OBJETIVO:</span><br>
+                Gerar receita atraves de cliques forcados. Redireciona navegacao para sites duvidosos e altera configuracoes do sistema sem consentimento.
+              </p>
+              <p>
+                <span class="text-orange-500 font-mono text-sm">// NIVEL_DE_AMEACA:</span><br>
+                <span class="text-orange-500 font-bold">ALTO</span> - Degrada performance, consome recursos e pode servir como vetor para outras infeccoes.
+              </p>
+            </div>
+
+            <!-- Warning -->
+            <div class="mt-6 p-4 bg-orange-950/20 border border-orange-900/30">
+              <div class="flex items-center gap-2 text-orange-500 text-sm font-mono">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="tracking-wider">INTEL</span>
+              </div>
+              <p class="text-gray-500 text-sm mt-2 font-mono">Alguns adware coletam dados de navegacao para exibir anuncios direcionados.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Did You Know Section -->
+        <div class="reveal mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="fact-card p-6">
+            <p class="font-mono text-xs text-red-500 mb-2 tracking-wider">// STATISTIC</p>
+            <p class="text-gray-400">O primeiro spyware conhecido foi criado em <span class="text-red-500 font-bold">1995</span> para monitoramento corporativo.</p>
+          </div>
+          <div class="fact-card p-6">
+            <p class="font-mono text-xs text-red-500 mb-2 tracking-wider">// DATA_POINT</p>
+            <p class="text-gray-400">Aproximadamente <span class="text-red-500 font-bold">80%</span> dos computadores brasileiros ja foram infectados por malware.</p>
+          </div>
+          <div class="fact-card p-6 sm:col-span-2 lg:col-span-1">
+            <p class="font-mono text-xs text-red-500 mb-2 tracking-wider">// INSIGHT</p>
+            <p class="text-gray-400">Programas "gratuitos" frequentemente monetizam atraves de adware ou venda de dados de usuarios.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Separator -->
+    <div class="section-separator max-w-4xl mx-auto"></div>
+
+    <!-- How It Works Section -->
+    <section id="como-funciona" class="py-20 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span class="reveal terminal-badge inline-block mb-4">INFECTION_VECTOR</span>
+          <h2 class="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-wide">
+            <span class="text-red-500">[</span> MECANISMO DE INFECCAO <span class="text-red-500">]</span>
+          </h2>
+          <p class="reveal reveal-delay-2 text-gray-500 max-w-2xl mx-auto font-mono text-sm">
+            // Analise do ciclo de ataque e comprometimento do sistema
+          </p>
+        </div>
+
+        <!-- Spyware Steps -->
+        <div class="mb-16">
+          <h3 class="reveal font-display text-lg font-bold text-red-500 mb-8 flex items-center gap-3 tracking-wider">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            SPYWARE // VETOR_DE_ATAQUE
+          </h3>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="reveal step-card p-6 pt-8 relative infection-indicator">
+              <div class="step-number">FASE 1</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">INFILTRACAO</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                O spyware penetra no sistema atraves de anexos de e-mail maliciosos, downloads de sites comprometidos ou programas pirateados. Frequentemente vem oculto em software aparentemente legitimo.
+              </p>
+              <div class="mt-4 font-mono text-xs text-red-600 opacity-60">vector: email_attachment | cracked_software</div>
+            </div>
+
+            <div class="reveal reveal-delay-1 step-card p-6 pt-8 relative infection-indicator">
+              <div class="step-number">FASE 2</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">INSTALACAO OCULTA</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Instalacao silenciosa em diretorios ocultos. Modificacao do registro para inicializacao automatica. Tecnicas de evasao para evitar deteccao por antiviruses e firewall.
+              </p>
+              <div class="mt-4 font-mono text-xs text-red-600 opacity-60">persistence: registry_modification</div>
+            </div>
+
+            <div class="reveal reveal-delay-2 step-card p-6 pt-8 relative infection-indicator">
+              <div class="step-number">FASE 3</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">EXFILTRACAO</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Captura de teclas digitadas (keylogger), historico, senhas salvas, conversas e arquivos. Dados sao criptografados e transmitidos para servidores C2 (Command & Control).
+              </p>
+              <div class="mt-4 font-mono text-xs text-red-600 opacity-60">exfil: encrypted_channel | C2_server</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Adware Steps -->
+        <div>
+          <h3 class="reveal font-display text-lg font-bold text-orange-500 mb-8 flex items-center gap-3 tracking-wider">
+            <div class="icon-container icon-amber w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+              </svg>
+            </div>
+            ADWARE // VETOR_DE_ATAQUE
+          </h3>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="reveal step-card p-6 pt-8 relative infection-indicator" style="--infection-color: #ff8800;">
+              <div class="step-number" style="background: #ff8800;">FASE 1</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">ENTRADA INDUZIDA</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Integrado em instaladores de programas gratuitos. O usuario aceita termos sem ler, permitindo instalacao de "componentes adicionais". Tambem distribuido via fake downloads.
+              </p>
+              <div class="mt-4 font-mono text-xs text-orange-600 opacity-60">vector: bundle_installer | fake_download</div>
+            </div>
+
+            <div class="reveal reveal-delay-1 step-card p-6 pt-8 relative infection-indicator">
+              <div class="step-number" style="background: #ff8800;">FASE 2</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">HIJACK DO SISTEMA</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Alteracao forcada das configuracoes do navegador: pagina inicial, provedor de busca, novas abas. Instalacao de extensoes que injetam anuncios em todas as paginas visitadas.
+              </p>
+              <div class="mt-4 font-mono text-xs text-orange-600 opacity-60">hijack: browser_settings | search_redirect</div>
+            </div>
+
+            <div class="reveal reveal-delay-2 step-card p-6 pt-8 relative infection-indicator">
+              <div class="step-number" style="background: #ff8800;">FASE 3</div>
+              <h4 class="font-display text-lg font-bold text-white mb-3 tracking-wide">MONETIZACAO</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Exibicao agressiva de popups, banners e videos automaticos. Cada clique gera receita para os atacantes. Dispositivo comprometido tem performance severamente degradada.
+              </p>
+              <div class="mt-4 font-mono text-xs text-orange-600 opacity-60">payload: ad_injection | click_fraud</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fake Popup Example -->
+        <div class="reveal mt-16 max-w-2xl mx-auto">
+          <p class="text-center font-mono text-xs text-red-600 mb-4 tracking-wider">// SIMULACAO_DE_AMEACA_REAL</p>
+          <div class="fake-popup">
+            <div class="fake-popup-header">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-black warning-icon-blink" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <span class="font-mono text-xs text-black font-bold tracking-wider">WINDOWS SECURITY CENTER</span>
+              </div>
+              <div class="flex gap-1">
+                <div class="w-3 h-3 bg-black/30"></div>
+                <div class="w-3 h-3 bg-red-700"></div>
+              </div>
+            </div>
+            <div class="p-6 text-center">
+              <svg class="w-16 h-16 mx-auto text-red-500 mb-4 warning-icon-blink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <p class="font-display text-white font-bold mb-1 tracking-wider text-lg">VIRUS DETECTADO!</p>
+              <p class="text-red-500 font-mono text-xs mb-1 tracking-wider">TROJAN_SPYWARE.HTML</p>
+              <p class="text-gray-500 text-sm mb-6">Seu computador esta infectado! Acao imediata necessaria para evitar perda de dados.</p>
+              <button class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-8 font-mono text-sm tracking-wider transition-colors" style="clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));">
+                LIMPAR AGORA
+              </button>
+              <p class="text-gray-600 text-xs mt-4 font-mono">* Este e um exemplo educativo de popup falso</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Separator -->
+    <div class="section-separator max-w-4xl mx-auto"></div>
+
+    <!-- Real Cases Section -->
+    <section id="casos-reais" class="py-20 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span class="reveal terminal-badge inline-block mb-4">INCIDENT_REPORT</span>
+          <h2 class="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-wide">
+            <span class="text-red-500">[</span> CASOS REAIS <span class="text-red-500">]</span>
+          </h2>
+          <p class="reveal reveal-delay-2 text-gray-500 max-w-2xl mx-auto font-mono text-sm">
+            // Incidentes documentados com impacto no territorio brasileiro
+          </p>
+        </div>
+
+        <!-- Timeline -->
+        <div class="relative">
+          <div class="timeline-line hidden md:block"></div>
+
+          <!-- Case 1 -->
+          <div class="reveal mb-12 md:mb-16 relative">
+            <div class="timeline-dot hidden md:block" style="top: 30px;"></div>
+            <div class="md:grid md:grid-cols-2 md:gap-12">
+              <div class="md:text-right md:pr-12">
+                <span class="inline-block px-3 py-1 bg-red-950 border border-red-800 text-red-500 font-mono text-xs tracking-wider mb-4">2023</span>
+                <h3 class="font-display text-xl font-bold text-white mb-2 tracking-wide">SPYWARE BANCARIO</h3>
+              </div>
+              <div class="md:pl-12 mt-4 md:mt-0">
+                <div class="card p-6 relative">
+                  <div class="absolute top-4 right-4 font-mono text-xs text-red-600 opacity-40">INCIDENT_001</div>
+                  <p class="text-gray-400 mb-4 text-sm leading-relaxed">
+                    Campanha massiva de spyware bancario afetou milhares de brasileiros. O malware se disfarcava como aplicativos uteis na Google Play Store, roubando credenciais de mais de 30 instituicoes financeiras.
+                  </p>
+                  <p class="text-gray-500 text-sm leading-relaxed">
+                    Tecnicas de overlay criavam telas falsas de login sobre os apps reais. Senhas digitadas eram capturadas e transmitidas instantaneamente aos atacantes.
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="text-xs px-2 py-1 bg-red-950/50 border border-red-900/30 text-red-500 font-mono">banking_trojan</span>
+                    <span class="text-xs px-2 py-1 bg-red-950/50 border border-red-900/30 text-red-500 font-mono">30+_bancos</span>
+                    <span class="text-xs px-2 py-1 bg-red-950/50 border border-red-900/30 text-red-500 font-mono">google_play</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 2 -->
+          <div class="reveal mb-12 md:mb-16 relative">
+            <div class="timeline-dot hidden md:block" style="top: 30px;"></div>
+            <div class="md:grid md:grid-cols-2 md:gap-12">
+              <div class="md:text-right md:pr-12 md:order-2">
+                <span class="inline-block px-3 py-1 bg-orange-950 border border-orange-800 text-orange-500 font-mono text-xs tracking-wider mb-4">2022</span>
+                <h3 class="font-display text-xl font-bold text-white mb-2 tracking-wide">ADWARE EM EXTENSOES</h3>
+              </div>
+              <div class="md:pl-12 md:order-1 mt-4 md:mt-0">
+                <div class="card p-6 relative">
+                  <div class="absolute top-4 right-4 font-mono text-xs text-orange-600 opacity-40">INCIDENT_002</div>
+                  <p class="text-gray-400 mb-4 text-sm leading-relaxed">
+                    Extensoes de navegador com milhoes de usuarios foram removidas das lojas por conterem adware oculto. Algumas alcancaram mais de 5 milhoes de downloads.
+                  </p>
+                  <p class="text-gray-500 text-sm leading-relaxed">
+                    As extensoes injetavam anuncios em todas as paginas, rastreavam historico de navegacao e redirecionavam buscas para sites de afiliados.
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="text-xs px-2 py-1 bg-orange-950/50 border border-orange-900/30 text-orange-500 font-mono">browser_extension</span>
+                    <span class="text-xs px-2 py-1 bg-orange-950/50 border border-orange-900/30 text-orange-500 font-mono">5M+_downloads</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 3 -->
+          <div class="reveal relative">
+            <div class="timeline-dot hidden md:block" style="top: 30px;"></div>
+            <div class="md:grid md:grid-cols-2 md:gap-12">
+              <div class="md:text-right md:pr-12">
+                <span class="inline-block px-3 py-1 bg-red-950 border border-red-800 text-red-500 font-mono text-xs tracking-wider mb-4">2021</span>
+                <h3 class="font-display text-xl font-bold text-white mb-2 tracking-wide">SPYWARE INFANTIL</h3>
+              </div>
+              <div class="md:pl-12 mt-4 md:mt-0">
+                <div class="card p-6 relative">
+                  <div class="absolute top-4 right-4 font-mono text-xs text-red-600 opacity-40">INCIDENT_003</div>
+                  <p class="text-gray-400 mb-4 text-sm leading-relaxed">
+                    Investigacao revelou dezenas de aplicativos "infantis" na Google Play contendo spyware. Os apps coletavam dados de criancas sem conhecimento dos pais.
+                  </p>
+                  <p class="text-gray-500 text-sm leading-relaxed">
+                    Dados como localizacao, contatos, fotos e gravacoes de audio eram enviados para servidores desconhecidos. O caso gerou debate mundial sobre seguranca infantil.
+                  </p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="text-xs px-2 py-1 bg-red-950/50 border border-red-900/30 text-red-500 font-mono">kids_apps</span>
+                    <span class="text-xs px-2 py-1 bg-red-950/50 border border-red-900/30 text-red-500 font-mono">privacy_violation</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert Box -->
+        <div class="reveal alert-box p-6 max-w-3xl mx-auto mt-16">
+          <div class="flex items-start gap-4">
+            <div class="icon-container icon-red w-12 h-12 flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-display text-lg font-bold text-red-500 mb-2 tracking-wider">THREAT_INTELLIGENCE</h4>
+              <p class="text-gray-400 text-sm leading-relaxed">
+                O Brasil figura entre os paises mais afetados por malware bancario globalmente. Pesquisas indicam que mais de <span class="text-red-500 font-bold">40%</span> dos ataques bancarios digitais no mundo tem vitimas brasileiras. A combinacao de alta adocao de internet banking com deficit de educacao digital cria ambiente favoravel para criminosos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Separator -->
+    <div class="section-separator max-w-4xl mx-auto"></div>
+
+    <!-- Protection Section -->
+    <section id="protecao" class="py-20 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span class="reveal terminal-badge inline-block mb-4" style="border-color: rgba(0, 200, 100, 0.4); color: #00cc66;">DEFENSE_PROTOCOL</span>
+          <h2 class="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-wide">
+            <span class="text-red-500">[</span> PROTOCOLOS DE DEFESA <span class="text-red-500">]</span>
+          </h2>
+          <p class="reveal reveal-delay-2 text-gray-500 max-w-2xl mx-auto font-mono text-sm">
+            // Contramedidas e melhores praticas de seguranca
+          </p>
+        </div>
+
+        <!-- Protection Tips Grid -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <!-- Spyware Protection -->
+          <div>
+            <h3 class="reveal font-display text-lg font-bold text-red-500 mb-6 flex items-center gap-3 tracking-wider">
+              <div class="icon-container icon-red w-10 h-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+              </div>
+              DEFESA: SPYWARE
+            </h3>
+
+            <div class="space-y-4">
+              <div class="reveal tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">01</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">ANTIVIROR CONFIABEL</h4>
+                  <p class="text-gray-500 text-sm font-light">Instale solucao de seguranca de empresa reconhecida. Mantenha assinatura ativa e execute varreduras completas semanalmente.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-1 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">02</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">DOWNLOADS SEGUROS</h4>
+                  <p class="text-gray-500 text-sm font-light">Baixe programas exclusivamente de fontes oficiais. Evite softwares crackeados. Leia cada tela de instalacao atentamente.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-2 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">03</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">ATUALIZACAO CONSTANTE</h4>
+                  <p class="text-gray-500 text-sm font-light">Mantenha sistema operacional, navegadores e aplicativos atualizados. Patches de seguranca corrigem vulnerabilidades exploradas.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-3 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">04</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">VIGILANCIA DE E-MAIL</h4>
+                  <p class="text-gray-500 text-sm font-light">Nunca clique em links ou anexos de e-mails suspeitos, mesmo que aparentem ser de empresas conhecidas. Phishing e vetor principal de infeccao.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Adware Protection -->
+          <div>
+            <h3 class="reveal font-display text-lg font-bold text-orange-500 mb-6 flex items-center gap-3 tracking-wider">
+              <div class="icon-container icon-amber w-10 h-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+              </div>
+              DEFESA: ADWARE
+            </h3>
+
+            <div class="space-y-4">
+              <div class="reveal tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">01</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">BLOQUEADOR DE ANUNCIOS</h4>
+                  <p class="text-gray-500 text-sm font-light">Instale extensao ad-blocker confiavel no navegador. Bloqueia anuncios maliciosos e reduz risco de cliques em armadilhas.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-1 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">02</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">INSTALACAO PERSONALIZADA</h4>
+                  <p class="text-gray-500 text-sm font-light">Sempre escolha "instalacao personalizada" ou "avancada". Desmarque qualquer oferta de barras de ferramentas ou programas extras.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-2 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">03</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">AUDITORIA DE EXTENSOES</h4>
+                  <p class="text-gray-500 text-sm font-light">Periodicamente revise extensoes instaladas no navegador. Remova todas as nao reconhecidas ou nao utilizadas.</p>
+                </div>
+              </div>
+
+              <div class="reveal reveal-delay-3 tip-card p-5 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-900/30 border border-green-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                  <span class="text-green-500 font-mono text-xs font-bold">04</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1 tracking-wide">CETICISMO DIGITAL</h4>
+                  <p class="text-gray-500 text-sm font-light">Se um programa pago aparece gratis em sites desconhecidos, desconfie. O custo oculto frequentemente e adware.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Checklist -->
+        <div class="reveal card p-8 max-w-3xl mx-auto">
+          <h4 class="font-display text-lg font-bold text-white mb-6 text-center tracking-wider">SECURITY_CHECKLIST</h4>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Antivirus instalado e ativo</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Sistema operacional atualizado</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Bloqueador de anuncios ativo</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Senhas fortes e unicas</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Backup de arquivos importante</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 bg-black/30 border border-gray-800 hover:border-red-900 transition-colors cursor-pointer group">
+              <input type="checkbox" class="w-4 h-4 accent-red-600">
+              <span class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">Autenticacao em 2 fatores</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Separator -->
+    <div class="section-separator max-w-4xl mx-auto"></div>
+
+    <!-- Sources Section -->
+    <section id="fontes" class="py-20 lg:py-32">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12">
+          <span class="reveal terminal-badge inline-block mb-4">REFERENCES</span>
+          <h2 class="reveal reveal-delay-1 font-display text-3xl sm:text-4xl font-bold mb-4 tracking-wide">
+            <span class="text-red-500">[</span> FONTES <span class="text-red-500">]</span>
+          </h2>
+          <p class="reveal reveal-delay-2 text-gray-500 font-mono text-sm">
+            // Todas as referencias utilizadas nesta analise
+          </p>
+        </div>
+
+        <!-- Sources List -->
+        <div class="reveal space-y-3">
+          <a href="https://cartilha.cert.br" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">Cartilha CERT.br</h4>
+              <p class="text-gray-600 text-sm font-mono">cartilha.cert.br</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a href="https://welivesecurity.com/pt" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">WeLiveSecurity (ESET)</h4>
+              <p class="text-gray-600 text-sm font-mono">welivesecurity.com/pt</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a href="https://canaltech.com.br" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">Canaltech</h4>
+              <p class="text-gray-600 text-sm font-mono">canaltech.com.br</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a href="https://olhardigital.com.br" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">Olhar Digital</h4>
+              <p class="text-gray-600 text-sm font-mono">olhardigital.com.br</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a href="https://g1.globo.com" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">G1 - Globo</h4>
+              <p class="text-gray-600 text-sm font-mono">g1.globo.com</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <a href="https://tecmundo.com.br" target="_blank" rel="noopener noreferrer" class="card source-link p-4 flex items-center gap-4 group">
+            <div class="icon-container icon-red w-10 h-10">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-white group-hover:text-red-500 transition-colors tracking-wide">TecMundo</h4>
+              <p class="text-gray-600 text-sm font-mono">tecmundo.com.br</p>
+            </div>
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-red-900/30 py-8 bg-black/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-red-600 flex items-center justify-center" style="clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));">
+              <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <span class="font-mono text-xs text-gray-600 tracking-wider">MALWARE_ANALYSIS_PROJECT</span>
+          </div>
+          <p class="font-mono text-xs text-gray-600 tracking-wider">
+            CONTEUDO EDUCACIONAL // TODOS OS DIREITOS RESERVADOS AOS AUTORES DAS FONTES
+          </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // INITIALIZATION - Variables declared first
+    // ============================================
+    
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // Canvas and context initialization
+    const canvas = document.getElementById('binary-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Binary rain columns array
+    let columns = [];
+    let drops = [];
+    
+    // Animation frame ID
+    let animationId = null;
+    
+    // ============================================
+    // BINARY RAIN EFFECT
+    // ============================================
+    
+    function initBinaryRain() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      const fontSize = 14;
+      columns = Math.floor(canvas.width / fontSize);
+      
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
+      }
+    }
+    
+    function drawBinaryRain() {
+      if (prefersReducedMotion) return;
+      
+      const fontSize = 14;
+      
+      // Semi-transparent black to create fade trail
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Red binary characters
+      ctx.fillStyle = 'rgba(255, 43, 43, 0.15)';
+      ctx.font = fontSize + 'px Share Tech Mono';
+      
+      for (let i = 0; i < drops.length; i++) {
+        // Random binary digit
+        const text = Math.random() > 0.5 ? '1' : '0';
+        
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        // Reset drop to top with random delay
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        
+        drops[i]++;
+      }
+      
+      animationId = requestAnimationFrame(drawBinaryRain);
+    }
+    
+    // Initialize and start
+    initBinaryRain();
+    drawBinaryRain();
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+      initBinaryRain();
+    });
+    
+    // ============================================
+    // SCROLL REVEAL
+    // ============================================
+    
+    const revealElements = document.querySelectorAll('.reveal');
+    
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    revealElements.forEach(el => {
+      revealObserver.observe(el);
+    });
+    
+    // ============================================
+    // MOBILE MENU
+    // ============================================
+    
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+      
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+        });
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          mobileMenu.classList.remove('open');
+        }
+      });
+    }
+    
+    // ============================================
+    // SMOOTH SCROLL
+    // ============================================
+    
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const headerOffset = 80;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: prefersReducedMotion ? 'auto' : 'smooth'
+          });
+        }
+      });
+    });
+    
+    // ============================================
+    // NAVBAR SCROLL EFFECT
+    // ============================================
+    
+    const navbar = document.querySelector('nav');
+    
+    window.addEventListener('scroll', () => {
+      if (navbar) {
+        if (window.scrollY > 50) {
+          navbar.style.background = 'rgba(5, 5, 5, 0.98)';
+          navbar.style.borderBottomColor = 'rgba(255, 0, 0, 0.3)';
+        } else {
+          navbar.style.background = 'rgba(5, 5, 5, 0.85)';
+          navbar.style.borderBottomColor = 'rgba(255, 0, 0, 0.15)';
+        }
+      }
+    });
+    
+    // ============================================
+    // CHECKBOX PERSISTENCE
+    // ============================================
+    
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach((checkbox, index) => {
+      const saved = localStorage.getItem('security-checklist-' + index);
+      if (saved === 'true') {
+        checkbox.checked = true;
+      }
+      
+      checkbox.addEventListener('change', () => {
+        localStorage.setItem('security-checklist-' + index, checkbox.checked);
+      });
+    });
+    
+    // ============================================
+    // KEYBOARD NAVIGATION
+    // ============================================
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        if (mobileMenuBtn) mobileMenuBtn.focus();
+      }
+    });
+    
+    // ============================================
+    // GLITCH EFFECT ON HOVER
+    // ============================================
+    
+    const glitchElements = document.querySelectorAll('.glitch');
+    
+    glitchElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        el.style.animation = 'glitch-skew 0.3s linear';
+        setTimeout(() => {
+          el.style.animation = 'glitch-skew 4s infinite linear alternate-reverse';
+        }, 300);
+      });
+    });
+    
+    // ============================================
+    // PRINT OPTIMIZATION
+    // ============================================
+    
+    window.addEventListener('beforeprint', () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      const scanlines = document.querySelector('.scanlines');
+      if (scanlines) scanlines.style.display = 'none';
+    });
+    
+    window.addEventListener('afterprint', () => {
+      if (!prefersReducedMotion) {
+        drawBinaryRain();
+      }
+      const scanlines = document.querySelector('.scanlines');
+      if (scanlines) scanlines.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
